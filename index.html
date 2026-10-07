@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="recite — the voice-native studio. Speak your system, watch it draw itself, and keep the record of how it was built."
+    />
+    <meta name="theme-color" content="#0d0c0b" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>recite — speak your system</title>
+  </head>
+  <body>
+    <header class="site-head">
+      <a class="brand" href="#/studio">
+        <span class="brand-dot" aria-hidden="true"></span>recite
+      </a>
+      <nav class="site-nav" aria-label="Pages">
+        <a href="#/studio" data-route="studio">studio</a>
+        <a href="#/record" data-route="record">record</a>
+        <a href="#/about" data-route="about">about</a>
+      </nav>
+    </header>
+
+    <main id="view">
+      <noscript>
+        <p class="note">recite needs JavaScript — the router and the canvas live there.</p>
+      </noscript>
+    </main>
+
+    <footer class="site-foot">
+      <span>designed &amp; built by voice · Hacker House Goa 2026 × Wispr Flow</span>
+      <a href="https://github.com/LangerSword/recite" rel="noopener">github</a>
+    </footer>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
