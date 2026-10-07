@@ -30,8 +30,7 @@ export default {
 
         <p class="note">
           The extractor turns dictated sessions and git history into this page.
-          When it runs, this stage fills in — or bring your own dictations:
-          <a href="#/connect">connect your Flow</a>.
+          When it runs, this stage fills in.
         </p>
       </section>
     `;

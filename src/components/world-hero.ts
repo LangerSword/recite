@@ -434,7 +434,7 @@ function buildRibbons(doc: Document): Ribbons | null {
         const copies = Math.max(2, Math.ceil(path.getTotalLength() / period) + 1);
         setCopies(copies);
 
-        const speed = index === 0 ? 48 : 56; // stage units per second
+        const speed = index === 0 ? 64 : 72; // stage units per second
         tweens.push(
           gsap.fromTo(
             host,
@@ -491,6 +491,29 @@ function buildRibbons(doc: Document): Ribbons | null {
         cycle.to(rawHost, { fill: "rgba(255,255,255,0.56)", duration: 1.3, ease: "power1.out" }, 4.4);
         cycle.to({}, { duration: 6 });
         tweens.push(cycle);
+      }
+
+      // The pill: the band streams out of it and its bars keep the room
+      // alive — the Wispr treatment, in this world's materials.
+      const pill = wrap.querySelector<SVGGElement>("#wr-pill");
+      const bars = Array.from(wrap.querySelectorAll<SVGRectElement>(".wr-bar"));
+      if (pill) {
+        tweens.push(gsap.to(pill, { opacity: 1, duration: 0.9, ease: "power1.out", delay: 0.45 }));
+        if (!reduce && bars.length) {
+          bars.forEach((bar, i) => {
+            tweens.push(
+              gsap.to(bar, {
+                scaleY: () => gsap.utils.random(0.35, 1.9),
+                duration: () => gsap.utils.random(0.22, 0.5),
+                yoyo: true,
+                repeat: -1,
+                repeatRefresh: true,
+                ease: "sine.inOut",
+                delay: i * 0.035,
+              }),
+            );
+          });
+        }
       }
     });
   };

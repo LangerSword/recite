@@ -3,10 +3,9 @@ import "./styles.css";
 import studio from "./pages/studio";
 import record from "./pages/record";
 import about from "./pages/about";
-import connect from "./pages/connect";
 import { enterPage } from "./lib/motion";
 
-type Route = "studio" | "record" | "about" | "connect";
+type Route = "studio" | "record" | "about";
 
 interface Page {
   title: string;
@@ -16,7 +15,7 @@ interface Page {
   mount?(root: HTMLElement): (() => void) | void;
 }
 
-const routes: Record<Route, Page> = { studio, record, about, connect };
+const routes: Record<Route, Page> = { studio, record, about };
 
 const DEFAULT_ROUTE: Route = "studio";
 const view = document.querySelector<HTMLElement>("#view");
