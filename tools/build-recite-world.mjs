@@ -22,7 +22,14 @@
  *   - ghost wordmark           → RECITE
  *   - the transformation panel → ADDED (speech in, structure out) and wired
  *                                by the app at runtime
- *   - a small override sheet   → headline fit, panel styles, reduced motion
+ *   - the vines                → parked: blades, ferns, flowers, shell and
+ *                                wire off, butterfly too — words take the
+ *                                roots' place (see the word-ribbons)
+ *   - the word-ribbons         → ADDED: two SVG textPath marquees (raw speech
+ *                                on a faint arc, refined commands on the
+ *                                band), drawn and driven by the app
+ *   - a small override sheet   → headline fit, panel styles, ribbons,
+ *                                reduced motion
  *
  * Run: node tools/build-recite-world.mjs   (wired as `prebuild`)
  */
@@ -87,6 +94,11 @@ rewrite("dock/studio-href",
   `<a class="dock-item is-active" data-dock data-spec data-burst href="#/studio" style="--d:180ms">`);
 
 rewrite("dock/label-grove", `<span>Grove</span>`, `<span>studio</span>`);
+
+/* The canonical "Grove" sprout glyph is a plant; the studio is a graph. */
+rewrite("dock/glyph-studio",
+  `          <svg viewBox="0 0 16 16"><path d="M8 14V9"/><path d="M8 9c0-2.4 1.7-4.3 4-4.3.2 2.6-1.6 4.6-4 4.3Z"/><path d="M8 10.5C7.9 8.4 6.4 6.8 4.4 6.8 4.3 8.9 5.9 10.6 8 10.5Z"/></svg>`,
+  `          <svg viewBox="0 0 16 16"><circle cx="4.2" cy="11.2" r="1.7"/><circle cx="11.8" cy="4.8" r="1.7"/><circle cx="11.8" cy="11.9" r="1.7"/><path d="M5.6 10.3 10.4 5.7"/><path d="M5.9 11.5 10.1 11.8"/></svg>`);
 
 rewrite("dock/record-href",
   `<a class="dock-item" data-dock data-spec data-burst href="#" style="--d:230ms">`,
@@ -168,6 +180,56 @@ drives its timeline. -->
 rewrite("panel/insert",
   `    <dl class="stat stat--a mask" style="--d:700ms; --pd:12">`,
   PANEL + `    <dl class="stat stat--a mask" style="--d:700ms; --pd:12">`);
+
+/* ── 4b. the vine swap: the plant growth gives way to words ──────────────── */
+
+rewrite("plants/shell",
+  `    group.add(shell);`,
+  `    if (opt.shell !== false) group.add(shell);`);
+
+rewrite("plants/near-zero",
+  `      blades: BLADES_NEAR, ferns: small ? 26 : 46, flowers: small ? 120 : 260,`,
+  `      blades: 0, ferns: 0, flowers: 0, shell: false,`);
+rewrite("plants/near-wire",
+  `      fernSize: [0.22, 0.50], flowerSize: [0.055, 0.118], mainLimbs: mainCount, wire: true,`,
+  `      fernSize: [0.22, 0.50], flowerSize: [0.055, 0.118], mainLimbs: mainCount, wire: false,`);
+
+rewrite("plants/far-zero",
+  `      blades: BLADES_FAR, ferns: small ? 8 : 16, flowers: small ? 40 : 90,`,
+  `      blades: 0, ferns: 0, flowers: 0, shell: false,`);
+rewrite("plants/far-wire",
+  `      mask: [0.4, 3.4, 0.0, 0.42], wire: true,`,
+  `      mask: [0.4, 3.4, 0.0, 0.42], wire: false,`);
+
+rewrite("plants/butterfly",
+  `    if (!small) bf = buildButterfly(nearGroup, nearLimbs, nearGroup.userData.uni);`,
+  `    /* recite: the butterfly is parked while the vines are words. */`);
+
+/* ── 4c. the word-ribbons (added) ────────────────────────────────────────── */
+
+const RIBBONS = `    <!-- recite: the word-ribbons. The vines give way to words: raw speech
+    drifts along a faint arc on the left while the refined commands stream
+    across the band below. The app draws the paths in and runs the marquees. -->
+    <div class="wr-wrap" id="word-ribbons" aria-hidden="true">
+      <svg viewBox="0 0 1600 880" focusable="false">
+        <path class="wr-path wr-path--raw" id="wr-raw-path" pathLength="1"
+          d="M 70 900 C 20 700, 60 520, 190 430 C 300 355, 400 320, 520 300"/>
+        <path class="wr-path wr-path--band" id="wr-band-path" pathLength="1"
+          d="M -80 680 C 260 630, 560 620, 860 610 C 1160 600, 1420 615, 1680 555"/>
+        <text class="wr-text wr-text--raw" dy="-3">
+          <textPath class="wr-run" href="#wr-raw-path" data-repeat="hey so um add like a payments api and uh connect it to postgres and maybe add a cache for the reads and also um scale the workers and queue the events and uh ">hey so um add like a payments api and uh connect it to postgres and maybe add a cache for the reads and also um scale the workers and queue the events and uh hey so um add like a payments api and uh connect it to postgres and maybe add a cache for the reads and also um scale the workers and queue the events and uh </textPath>
+        </text>
+        <text class="wr-text wr-text--ref" dy="4.5">
+          <textPath class="wr-run" href="#wr-band-path" data-repeat="add payments api · connect payments api to postgres · add a cache for the reads · queue the events · scale the workers · ">add payments api · connect payments api to postgres · add a cache for the reads · queue the events · scale the workers · add payments api · connect payments api to postgres · add a cache for the reads · queue the events · scale the workers · </textPath>
+        </text>
+      </svg>
+    </div>
+
+`;
+
+rewrite("ribbons/insert",
+  `    <!-- recite: the transformation panel.`,
+  RIBBONS + `    <!-- recite: the transformation panel.`);
 
 /* ── 5. override sheet (appended to the authored <style>) ────────────────── */
 
@@ -270,6 +332,35 @@ const OVERRIDES = `
     .rpanel-live{ animation:none; }
     .rpanel-raw.is-polishing{ animation:none; color:inherit; background-image:none; -webkit-background-clip:border-box; background-clip:border-box; }
     .rpanel-raw .flr.is-struck::after{ transition:none; }
+  }
+
+  /* ══ recite: the word-ribbons (vines give way to words) ══
+     Raw speech drifts along a faint arc; the refined commands ride the
+     band. The app draws the paths in (dash) and runs the marquees (x). */
+  .wr-wrap{
+    position:absolute; left:0; top:0; z-index:3;
+    width:calc(1600 * var(--u)); height:calc(880 * var(--u));
+    pointer-events:none;
+  }
+  .wr-wrap svg{ display:block; width:100%; height:100%; overflow:visible; }
+  .wr-path{ fill:none; stroke-dasharray:1; stroke-dashoffset:1; }
+  .wr-path--raw{ stroke:rgba(255,255,255,.09); stroke-width:1; }
+  .wr-path--band{ stroke:rgba(233,231,220,.93); stroke-width:26; stroke-linecap:round; }
+  .wr-text{ opacity:0; }
+  .wr-text--raw{
+    font-family:'Lexend',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    font-size:17px; font-weight:300; letter-spacing:.4px;
+    fill:rgba(255,255,255,.46);
+  }
+  .wr-text--ref{
+    font-family:ui-monospace,'SFMono-Regular',Menlo,Consolas,'Liberation Mono',monospace;
+    font-size:13.5px; font-weight:400; letter-spacing:.2px;
+    fill:#242820;
+  }
+  @media (max-width:900px){ .wr-wrap{ display:none; } }
+  @media (prefers-reduced-motion:reduce){
+    .wr-path{ stroke-dashoffset:0 !important; }
+    .wr-text{ opacity:1 !important; }
   }
 `;
 

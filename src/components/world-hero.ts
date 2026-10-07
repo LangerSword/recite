@@ -28,8 +28,10 @@ function scrollToStudioTool(): void {
  * /landing-pages/recite-world.html) framed as recite's hero.
  *
  * The frame is same-origin, so the app drives the world from here: dock and
- * controls are retargeted to recite's routes, and the transformation panel's
- * timeline runs on GSAP over the framed DOM. Everything reverts on unmount.
+ * controls are retargeted to recite's routes, the transformation panel's
+ * timeline runs on GSAP over the framed DOM, and the word-ribbons (raw
+ * speech on a faint arc, refined commands on the band) draw in and loop.
+ * Everything reverts on unmount.
  */
 export function mountWorldHero(root: HTMLElement): () => void {
   let teardown: (() => void) | null = null;
@@ -125,6 +127,7 @@ function wireWorld(frame: HTMLIFrameElement): () => void {
   /* ── the transformation panel ──────────────────────────────────────────── */
 
   const demo = buildDemo(doc);
+  const ribbons = buildRibbons(doc);
   let startCall: gsap.core.Tween | null = null;
 
   const startWhenReady = (): void => {
@@ -132,7 +135,10 @@ function wireWorld(frame: HTMLIFrameElement): () => void {
     const kick = (): void => {
       if (started) return;
       started = true;
-      startCall = gsap.delayedCall(1.9, () => demo?.start());
+      startCall = gsap.delayedCall(1.9, () => {
+        demo?.start();
+        ribbons?.start();
+      });
     };
     const poll = window.setInterval(() => {
       const ready =
@@ -154,16 +160,20 @@ function wireWorld(frame: HTMLIFrameElement): () => void {
     });
   };
 
-  if (demo) {
+  if (demo || ribbons) {
     startWhenReady();
-    cleanups.push(() => demo.destroy());
+    if (demo) cleanups.push(() => demo.destroy());
+    if (ribbons) cleanups.push(() => ribbons.destroy());
   }
 
   // Debug handle (also used by the CDP verification script).
   const debugHost = window as unknown as { __reciteWorld?: unknown };
   debugHost.__reciteWorld = {
     demoFound: Boolean(demo),
+    ribbonFound: Boolean(ribbons),
     start: () => demo?.start(),
+    ribbonX: () =>
+      Array.from(doc.querySelectorAll(".wr-text")).map((el) => Number(el.getAttribute("x") ?? 0)),
     gsap,
   };
   cleanups.push(() => {
@@ -334,6 +344,95 @@ function buildDemo(doc: Document): Demo | null {
       panel.removeEventListener("pointerenter", onEnter);
       panel.removeEventListener("pointerleave", onLeave);
       doc.removeEventListener("visibilitychange", onVisibility);
+    },
+  };
+}
+
+/* ── the word-ribbons ───────────────────────────────────────────────────── */
+
+interface Ribbons {
+  start: () => void;
+  destroy: () => void;
+}
+
+function buildRibbons(doc: Document): Ribbons | null {
+  const wrap = doc.getElementById("word-ribbons");
+  if (!wrap) return null;
+  const paths = Array.from(wrap.querySelectorAll<SVGPathElement>(".wr-path"));
+  const texts = Array.from(wrap.querySelectorAll<SVGTextElement>(".wr-text"));
+  const runs = Array.from(wrap.querySelectorAll<SVGTextPathElement>(".wr-run"));
+  if (paths.length < 2 || texts.length < 2 || runs.length < 2) return null;
+
+  const reduce = prefersReducedMotion();
+  const tweens: gsap.core.Tween[] = [];
+  let started = false;
+
+  const start = (): void => {
+    if (started) return;
+    started = true;
+
+    if (reduce) {
+      gsap.set(paths, { strokeDashoffset: 0 });
+      gsap.set(texts, { opacity: 1 });
+      return;
+    }
+
+    // The paths draw themselves in like vines; the words follow.
+    paths.forEach((path, index) => {
+      tweens.push(
+        gsap.fromTo(
+          path,
+          { strokeDashoffset: 1 },
+          {
+            strokeDashoffset: 0,
+            duration: 2.1 + index * 0.5,
+            ease: EASE.draw,
+            delay: 0.25 + index * 0.45,
+          },
+        ),
+      );
+    });
+    tweens.push(gsap.to(texts, { opacity: 1, duration: 1.4, ease: "power1.out", delay: 1.1 }));
+
+    const ready: Promise<unknown> = doc.fonts?.ready ?? Promise.resolve();
+    void ready.then(() => {
+      if (reduce) return;
+      runs.forEach((run, index) => {
+        const host = texts[index];
+        const path = paths[index];
+        const base = run.dataset.repeat ?? "";
+        if (!host || !path || !base) return;
+
+        // The loop period: measure one copy, then two — the delta between the
+        // measurements is the distance between corresponding glyphs across the
+        // seam, which is exactly what a seamless marquee needs.
+        run.textContent = base;
+        const one = run.getComputedTextLength();
+        run.textContent = base + base;
+        const period = run.getComputedTextLength() - one;
+        if (period <= 0) return;
+
+        // Enough copies that the path stays covered at every loop position.
+        const copies = Math.max(2, Math.ceil(path.getTotalLength() / period) + 1);
+        run.textContent = base.repeat(copies);
+
+        const speed = index === 0 ? 42 : 56; // stage units per second
+        tweens.push(
+          gsap.fromTo(
+            host,
+            { attr: { x: -period } },
+            { attr: { x: 0 }, duration: period / speed, ease: "none", repeat: -1 },
+          ),
+        );
+      });
+    });
+  };
+
+  return {
+    start,
+    destroy: () => {
+      for (const tween of tweens) tween.kill();
+      tweens.length = 0;
     },
   };
 }
