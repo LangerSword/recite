@@ -1,3 +1,5 @@
+import { scrollReveal } from "../lib/motion";
+
 export default {
   title: "recite: the build record",
 
@@ -13,17 +15,17 @@ export default {
 
         <div class="record-stage">
           <div class="record-rail" aria-hidden="true">
-            <span class="rail-tick"></span>
-            <span class="rail-tick"></span>
-            <span class="rail-tick"></span>
-            <span class="rail-tick"></span>
-            <span class="rail-tick"></span>
+            <span class="rail-tick" data-reveal></span>
+            <span class="rail-tick" data-reveal></span>
+            <span class="rail-tick" data-reveal></span>
+            <span class="rail-tick" data-reveal></span>
+            <span class="rail-tick" data-reveal></span>
           </div>
-          <div class="record-empty">
+          <div class="record-empty" data-reveal>
             <span class="pulse-dot" aria-hidden="true"></span>
             <p>The first record is this build’s own. Sessions land here as they happen.</p>
           </div>
-          <p class="record-keys" aria-hidden="true">sessions, clips, commit cards</p>
+          <p class="record-keys" aria-hidden="true" data-reveal>sessions, clips, commit cards</p>
         </div>
 
         <p class="note">
@@ -32,5 +34,9 @@ export default {
         </p>
       </section>
     `;
+  },
+
+  mount(root: HTMLElement): () => void {
+    return scrollReveal(root);
   },
 };

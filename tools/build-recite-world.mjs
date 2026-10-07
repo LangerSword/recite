@@ -1,0 +1,284 @@
+#!/usr/bin/env node
+/**
+ * build-recite-world.mjs
+ *
+ * Derives `public/landing-pages/recite-world.html` from the byte-exact
+ * canonical ThreeUI "Sylva — Living Green" document kept at
+ * `public/landing-pages/inner-green-3d.html`.
+ *
+ * This follows the ThreeUI catalog's own variant pattern: the packaged file is
+ * never edited in place. Every change is an anchored rewrite applied to the
+ * source string, and every anchor is asserted, so upstream drift fails the
+ * build instead of silently deforming the page.
+ *
+ * What is rewritten (and why):
+ *   - head copy + og tags      → recite's identity
+ *   - the embedded Lexend font → local `inner-green-assets/lexend-latin.woff2`
+ *                                (same content-addressed bytes, served from us)
+ *   - dock                     → mark, labels and hrefs retargeted for recite
+ *   - headline + lede          → recite's words, in the authored structure
+ *   - the explore pill         → "Open the studio"
+ *   - stats                    → honest copy, no invented numbers
+ *   - ghost wordmark           → RECITE
+ *   - the transformation panel → ADDED (speech in, structure out) and wired
+ *                                by the app at runtime
+ *   - a small override sheet   → headline fit, panel styles, reduced motion
+ *
+ * Run: node tools/build-recite-world.mjs   (wired as `prebuild`)
+ */
+
+import { readFileSync, writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
+
+const here = dirname(fileURLToPath(import.meta.url));
+const SRC = join(here, "..", "public", "landing-pages", "inner-green-3d.html");
+const OUT = join(here, "..", "public", "landing-pages", "recite-world.html");
+
+let doc = readFileSync(SRC, "utf8");
+const applied = [];
+
+function rewrite(name, find, replace, count = 1) {
+  const hits = doc.split(find).length - 1;
+  if (hits !== count) {
+    throw new Error(`[${name}] anchor found ${hits}× (expected ${count}) — upstream document drifted`);
+  }
+  doc = doc.split(find).join(replace);
+  applied.push(name);
+}
+
+/* ── 1. head identity ────────────────────────────────────────────────────── */
+
+rewrite("head/title",
+  `<title>Sylva — Into the living world</title>`,
+  `<title>recite: the voice-native studio</title>
+<meta property="og:type" content="website">
+<meta property="og:title" content="recite: speak your system">
+<meta property="og:description" content="The voice-native studio: speak your system, watch it draw, and keep the record of how it was built.">
+<meta property="og:url" content="https://recite.langersword.in/">
+<meta name="twitter:card" content="summary">`);
+
+rewrite("head/description",
+  `<meta name="description" content="Restoring wild places through patient design, native planting, and a deeper kind of stewardship.">`,
+  `<meta name="description" content="The voice-native studio: speak your system, watch it draw, and keep the record of how it was built.">`);
+
+rewrite("head/font",
+  `https://ublctyddhtbgaersvxxb.supabase.co/storage/v1/object/public/threeui-media/scene-images/embedded/1ec8f6ee2750554b4bc59ff0b507d316a82a7ba37e0e5bebc41d3bd9b9faad46.woff2`,
+  `inner-green-assets/lexend-latin.woff2`);
+
+rewrite("head/favicon",
+  `%3Cpath fill='%23fff' d='M11 1.3c-2.1 0-3.95 1.2-4.75 2.95C3.95 4.55 2.3 6.25 2.3 8.35c0 2.3 1.9 4.2 4.3 4.2h8.8c2.4 0 4.3-1.9 4.3-4.2 0-2.1-1.65-3.8-4-4.1C14.95 2.5 13.1 1.3 11 1.3Z'/%3E%3Cpath fill='%23fff' d='M9.6 12.55h2.8v4.2c1.35.3 2.45 1.15 3.15 2.4-1.35.4-2.4.15-3.15-.4v4.15H9.6v-4.15c-.75.55-1.8.8-3.15.4.7-1.25 1.8-2.1 3.15-2.4v-4.2Z'/%3E`,
+  `%3Ccircle cx='11' cy='12' r='5.5' fill='%23fff'/%3E`);
+
+/* ── 2. dock ─────────────────────────────────────────────────────────────── */
+
+rewrite("dock/mark-anchor",
+  `<a class="dock-item dock-mark" data-dock data-spec data-burst href="#" style="--d:120ms" aria-label="Sylva — home">`,
+  `<a class="dock-item dock-mark" data-dock data-spec data-burst href="#/studio" style="--d:120ms" aria-label="recite: home">`);
+
+rewrite("dock/mark-glyph",
+  `          <path d="M11 1.3c-2.1 0-3.95 1.2-4.75 2.95C3.95 4.55 2.3 6.25 2.3 8.35c0 2.3 1.9 4.2 4.3 4.2h8.8c2.4 0 4.3-1.9 4.3-4.2 0-2.1-1.65-3.8-4-4.1C14.95 2.5 13.1 1.3 11 1.3Z"/>
+          <path d="M9.6 12.55h2.8v4.2c1.35.3 2.45 1.15 3.15 2.4-1.35.4-2.4.15-3.15-.4v4.15H9.6v-4.15c-.75.55-1.8.8-3.15.4.7-1.25 1.8-2.1 3.15-2.4v-4.2Z"/>`,
+  `          <circle cx="11" cy="12" r="5.4"/>`);
+
+rewrite("dock/studio-href",
+  `<a class="dock-item is-active" data-dock data-spec data-burst href="#" style="--d:180ms">`,
+  `<a class="dock-item is-active" data-dock data-spec data-burst href="#/studio" style="--d:180ms">`);
+
+rewrite("dock/label-grove", `<span>Grove</span>`, `<span>studio</span>`);
+
+rewrite("dock/record-href",
+  `<a class="dock-item" data-dock data-spec data-burst href="#" style="--d:230ms">`,
+  `<a class="dock-item" data-dock data-spec data-burst href="#/record" style="--d:230ms">`);
+
+rewrite("dock/label-habitats", `<span>Habitats</span>`, `<span>record</span>`);
+
+rewrite("dock/about-href",
+  `<a class="dock-item" data-dock data-spec data-burst href="#" style="--d:280ms">`,
+  `<a class="dock-item" data-dock data-spec data-burst href="#/about" style="--d:280ms">`);
+
+rewrite("dock/label-journal", `<span>Journal</span>`, `<span>about</span>`);
+
+rewrite("dock/github-href",
+  `<a class="dock-item dock-item--enter" data-dock data-spec data-burst href="#" style="--d:330ms">`,
+  `<a class="dock-item dock-item--enter" data-dock data-spec data-burst href="https://github.com/LangerSword/recite" target="_blank" rel="noopener" style="--d:330ms">`);
+
+rewrite("dock/label-enter", `<span>Enter</span>`, `<span>github</span>`);
+
+/* ── 3. hero copy ────────────────────────────────────────────────────────── */
+
+rewrite("copy/headline-1", `<i style="--d:260ms">Step into</i>`, `<i style="--d:260ms">Speak your system.</i>`);
+rewrite("copy/headline-2", `<i style="--d:360ms">the living world</i>`, `<i style="--d:360ms">Watch it draw.</i>`);
+
+rewrite("copy/lede",
+  `We restore wild places through patient design, native planting, and a deeper kind of stewardship.`,
+  `recite turns speech into a system: what you say becomes nodes and edges, with undo, export, and a record of how it was built.`);
+
+rewrite("copy/pill-label", `<span class="lbl">Explore the work</span>`, `<span class="lbl">Open the studio</span>`);
+
+rewrite("copy/stat-a", `<div><dt>Canopy restored</dt><dd>282 ha</dd></div>`, `<div><dt>The studio</dt><dd>draws by voice</dd></div>`);
+rewrite("copy/stat-b", `<div><dt>Native species</dt><dd>43 mapped</dd></div>`, `<div><dt>The record</dt><dd>kept word for word</dd></div>`);
+
+rewrite("copy/ghost", `<div class="ghost fade" style="--d:1150ms" aria-hidden="true">SYLVA</div>`, `<div class="ghost fade" style="--d:1150ms" aria-hidden="true">RECITE</div>`);
+
+rewrite("copy/scroll-href", `<a class="scroll mask" style="--d:1040ms; --pd:9" href="#">`, `<a class="scroll mask" style="--d:1040ms; --pd:9" href="#studio-tool">`);
+
+/* ── 4. the transformation panel (added) ─────────────────────────────────── */
+
+const PANEL = `    <!-- recite: the transformation panel. Speech in, structure out: \
+the raw dictation refines itself into commands, and each command draws. \
+Inside the frame (same origin) so it composites with the world; the app \
+drives its timeline. -->
+    <aside class="rpanel mask" style="--d:1010ms" id="recite-panel"
+      aria-label="Speak a command and watch the diagram draw itself">
+      <header class="rpanel-head">
+        <span class="rpanel-live" aria-hidden="true"></span>
+        <span class="rpanel-state" data-state>listening</span>
+        <button class="rpanel-replay" type="button" aria-label="Replay the demonstration">replay</button>
+      </header>
+      <p class="rpanel-raw" data-raw><span class="w flr">hey</span> <span class="w flr">so</span> <span class="w flr">um</span> <span class="w">add</span> <span class="w flr">like</span> <span class="w">a</span> <span class="w">payments</span> <span class="w">api</span> <span class="w">and</span> <span class="w flr">uh</span> <span class="w">connect</span> <span class="w">it</span> <span class="w">to</span> <span class="w">postgres</span></p>
+      <p class="rpanel-divider" data-divider><span>refined into</span></p>
+      <ul class="rpanel-cmds" data-cmds>
+        <li data-cmd="1"><i aria-hidden="true"></i>add payments api</li>
+        <li data-cmd="2"><i aria-hidden="true"></i>connect payments api to postgres</li>
+      </ul>
+      <svg class="rpanel-canvas" viewBox="0 0 440 132" aria-hidden="true">
+        <defs>
+          <marker id="rc-arrow" viewBox="0 0 6 6" refX="5.2" refY="3"
+                  markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+            <path d="M0,0 L6,3 L0,6 z" class="rc-arrow-head"/>
+          </marker>
+        </defs>
+        <path class="rc-edge" data-edge pathLength="1"
+              d="M170,46 C225,46 185,90 240,90" marker-end="url(#rc-arrow)" style="opacity:0"/>
+        <g class="rc-node" data-node="a" style="opacity:0">
+          <rect x="16" y="24" width="154" height="44" rx="11"/>
+          <text x="34" y="51">payments api</text>
+        </g>
+        <g class="rc-node" data-node="b" style="opacity:0">
+          <rect x="240" y="68" width="140" height="44" rx="11"/>
+          <text x="258" y="95">postgres</text>
+        </g>
+      </svg>
+    </aside>
+
+`;
+
+rewrite("panel/insert",
+  `    <dl class="stat stat--a mask" style="--d:700ms; --pd:12">`,
+  PANEL + `    <dl class="stat stat--a mask" style="--d:700ms; --pd:12">`);
+
+/* ── 5. override sheet (appended to the authored <style>) ────────────────── */
+
+const OVERRIDES = `
+  /* ══ recite: derived overrides (added by tools/build-recite-world.mjs) ══
+     Headline fit for recite's longer first line, and the transformation
+     panel. The panel borrows the dock's material: translucent, lit top
+     edge, no backdrop-filter over the live canvas (see the dock note). */
+  html,body{ height:100% !important; overflow:hidden !important; }
+  @media (min-width:901px){
+    .headline{ font-size:calc(54 * var(--u)); line-height:calc(58 * var(--u)); }
+    .lede{ left:calc(552 * var(--u)); }
+  }
+  .card,.knob,.knob-float,.play-wrap{ display:none !important; }
+  .rpanel{
+    position:absolute; z-index:6;
+    left:calc(776 * var(--u)); top:calc(184 * var(--u));
+    width:calc(456 * var(--u));
+    padding:calc(20 * var(--u)) calc(24 * var(--u)) calc(16 * var(--u));
+    border-radius:calc(14 * var(--u));
+    border:1px solid rgba(255,255,255,.11);
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,0) 42%),
+      rgba(30,35,27,.84);
+    box-shadow:0 calc(8 * var(--u)) calc(22 * var(--u)) rgba(10,14,8,.30),
+               inset 0 1px rgba(255,255,255,.06);
+    color:var(--ink);
+  }
+  .rpanel-head{ display:flex; align-items:center; gap:calc(8 * var(--u)); margin-bottom:calc(13 * var(--u)); }
+  .rpanel-live{
+    width:calc(8 * var(--u)); height:calc(8 * var(--u)); border-radius:50%; flex:none;
+    background:rgba(255,255,255,.85);
+    animation:rpPulse 2.2s var(--ease) infinite;
+  }
+  @keyframes rpPulse{ 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.32;transform:scale(.8)} }
+  .rpanel-state{
+    font-size:calc(11 * var(--u)); font-weight:500;
+    letter-spacing:calc(1.5 * var(--u)); text-transform:uppercase; color:var(--ink-soft);
+  }
+  .rpanel-replay{
+    margin-left:auto; appearance:none; background:none; border:0; padding:calc(2 * var(--u)) 0;
+    font:inherit; font-size:calc(10 * var(--u)); font-weight:500;
+    letter-spacing:calc(1.5 * var(--u)); text-transform:uppercase;
+    color:rgba(255,255,255,.5); cursor:pointer;
+    transition:color .18s var(--ease);
+  }
+  .rpanel-replay:hover{ color:var(--ink); }
+  .rpanel-replay{ color:rgba(255,255,255,.62); }
+  .rpanel-raw{
+    margin:0 0 calc(12 * var(--u));
+    font-size:calc(14.5 * var(--u)); line-height:calc(21 * var(--u));
+    font-weight:300; color:var(--ink-soft);
+  }
+  .rpanel-raw .w{ display:inline; }
+  .rpanel-raw .flr{ position:relative; color:var(--ink-faint); }
+  .rpanel-raw .flr::after{
+    content:''; position:absolute; left:0; right:0; top:54%; height:1px;
+    background:currentColor; transform:scaleX(0); transform-origin:0 50%;
+  }
+  .rpanel-raw .flr.is-struck::after{ transform:scaleX(1); transition:transform .42s var(--ease); }
+  .rpanel-raw .flr.is-struck{ color:rgba(255,255,255,.24); transition:color .5s var(--ease); }
+  .rpanel-raw.is-polishing{
+    background-image:linear-gradient(100deg, rgba(255,255,255,.28) 0%, #fff 20%, rgba(255,255,255,.28) 40%);
+    background-size:220% 100%; background-repeat:no-repeat;
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    animation:rpSweep 1.4s ease-in-out 1;
+  }
+  @keyframes rpSweep{ from{background-position:130% 0} to{background-position:-30% 0} }
+  .rpanel-divider{ display:flex; align-items:center; gap:calc(10 * var(--u)); margin:0 0 calc(10 * var(--u)); opacity:0; }
+  .rpanel-divider span{
+    font-size:calc(9.5 * var(--u)); font-weight:500;
+    letter-spacing:calc(1.8 * var(--u)); text-transform:uppercase;
+    color:rgba(255,255,255,.42); white-space:nowrap;
+  }
+  .rpanel-divider::before,.rpanel-divider::after{ content:''; height:1px; background:rgba(255,255,255,.12); flex:1; }
+  .rpanel-cmds{ list-style:none; margin:0 0 calc(12 * var(--u)); padding:0; display:grid; gap:calc(7 * var(--u)); }
+  .rpanel-cmds li{
+    display:flex; align-items:baseline; gap:calc(9 * var(--u));
+    font-size:calc(13 * var(--u)); font-weight:400; color:var(--ink);
+  }
+  .rpanel-cmds li i{
+    width:calc(5 * var(--u)); height:calc(5 * var(--u)); border-radius:1px; flex:none;
+    background:rgba(255,255,255,.55); transform:translateY(calc(-1 * var(--u)));
+  }
+  .rpanel-canvas{ display:block; width:100%; height:auto; }
+  .rc-node rect{ fill:rgba(28,33,26,.85); stroke:rgba(255,255,255,.24); stroke-width:1; }
+  .rc-node text{ font-family:'Lexend',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-size:12px; font-weight:400; letter-spacing:.4px; fill:rgba(255,255,255,.85); }
+  .rc-edge{ fill:none; stroke:rgba(255,255,255,.45); stroke-width:1.4; stroke-dasharray:1; stroke-dashoffset:1; }
+  .rc-arrow-head{ fill:rgba(255,255,255,.45); }
+  @media (max-width:900px){
+    .rpanel{ left:calc(34 * var(--u)); top:calc(648 * var(--u)); width:calc(692 * var(--u));
+             padding:calc(30 * var(--u)) calc(34 * var(--u)) calc(24 * var(--u)); }
+    .rpanel-raw{ font-size:calc(26 * var(--u)); line-height:calc(37 * var(--u)); }
+    .rpanel-state, .rpanel-replay{ font-size:calc(22 * var(--u)); letter-spacing:calc(2.6 * var(--u)); }
+    .rpanel-divider span{ font-size:calc(18 * var(--u)); letter-spacing:calc(3.2 * var(--u)); }
+    .rpanel-cmds li{ font-size:calc(26 * var(--u)); }
+    .rc-node text{ font-size:15px; }
+  }
+  @media (prefers-reduced-motion:reduce){
+    .rpanel-live{ animation:none; }
+    .rpanel-raw.is-polishing{ animation:none; color:inherit; background-image:none; -webkit-background-clip:border-box; background-clip:border-box; }
+    .rpanel-raw .flr.is-struck::after{ transition:none; }
+  }
+`;
+
+rewrite("overrides/append", `</style>`, OVERRIDES + `</style>`);
+
+/* ── write ───────────────────────────────────────────────────────────────── */
+
+writeFileSync(OUT, doc);
+const sha = createHash("sha256").update(doc, "utf8").digest("hex");
+console.log("recite-world.html built");
+console.log("  rewrites:", applied.length);
+console.log("  bytes:", Buffer.byteLength(doc, "utf8"), "| sha256:", sha);

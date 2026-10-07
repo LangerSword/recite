@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "world": "node tools/build-recite-world.mjs",
+    "prebuild": "node tools/build-recite-world.mjs",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },

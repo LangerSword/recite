@@ -1,3 +1,5 @@
+import { scrollReveal } from "../lib/motion";
+
 export default {
   title: "recite: about",
 
@@ -8,39 +10,43 @@ export default {
         <h1>Design it by voice. Build it by voice. <em>Hear how it was made.</em></h1>
 
         <div class="prose">
-          <p>
+          <p data-reveal>
             recite is a voice-native studio in two halves. <strong>Studio</strong>
             turns speech into a diagram: speak a system, watch it draw itself,
             refine by voice. <strong>Record</strong> keeps the build that made
             it: the real audio sitting next to the commits it produced, so
             every change has a voice behind it.
           </p>
-          <p>
+          <p data-reveal>
             The first record is its own. This site is being designed and built
             entirely by voice. Every session is dictated and committed as it
             happens; no product code is typed by hand.
           </p>
-          <p>
+          <p data-reveal>
             Built for the <strong>Hacker House Goa 2026 × Wispr Flow</strong>
             build task. Any dictation works; this build runs on Wispr Flow.
           </p>
         </div>
 
         <dl class="facts">
-          <div>
+          <div data-reveal>
             <dt>Stack</dt>
             <dd>Vite + TypeScript, no framework. A static site, no backend.</dd>
           </div>
-          <div>
+          <div data-reveal>
             <dt>Method</dt>
             <dd>Product code enters the repo only through voice sessions.</dd>
           </div>
-          <div>
-            <dt>Record</dt>
-            <dd>Audio and commits extracted from the build itself.</dd>
+          <div data-reveal>
+            <dt>World</dt>
+            <dd>The living hero is ThreeUI's Sylva, adapted for recite.</dd>
           </div>
         </dl>
       </section>
     `;
+  },
+
+  mount(root: HTMLElement): () => void {
+    return scrollReveal(root);
   },
 };

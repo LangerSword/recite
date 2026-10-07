@@ -608,3 +608,59 @@ h1 em {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ---- the living world (ThreeUI "Sylva — Living Green", derived) ----
+   The world is served as its own self-contained document and framed here:
+   same-origin, so the app drives its dock, controls and demo from
+   src/components/world-hero.ts. Full-bleed, one viewport tall. */
+
+.world {
+  position: relative;
+  width: 100%;
+  height: 100dvh;
+  min-height: 36rem;
+  overflow: hidden;
+  isolation: isolate;
+  /* the world's own field tone, so the frame’s first paint has no flash */
+  background:
+    radial-gradient(64% 52% at 27% 84%, rgba(232, 238, 222, 0.085) 0%, rgba(232, 238, 222, 0) 72%),
+    #4a4d44;
+}
+
+.world-frame {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.world--fallback {
+  display: grid;
+  place-items: end start;
+  padding: 2rem var(--pad);
+}
+
+.world--fallback::after {
+  content: "The living world needs WebGL2. The studio below works without it.";
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* On the studio route the world's own dock is the navigation. */
+body[data-page="studio"] .site-head {
+  display: none;
+}
+
+body[data-page="studio"] #view {
+  padding: 0;
+  max-width: none;
+}
+
+.page--studio {
+  max-width: calc(var(--page) + 2 * var(--pad));
+  margin-inline: auto;
+  padding: clamp(3rem, 8vh, 5.5rem) var(--pad) clamp(3.5rem, 10vh, 7rem);
+}

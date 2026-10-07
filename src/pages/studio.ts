@@ -1,5 +1,5 @@
-import { enterPage } from "../lib/motion";
-import { mountDiagramDemo } from "../components/diagram-demo";
+import { enterPage, scrollReveal } from "../lib/motion";
+import { mountWorldHero } from "../components/world-hero";
 
 const EXAMPLES = [
   "add payments api",
@@ -12,43 +12,39 @@ export default {
 
   render(): string {
     return `
-      <section class="page page--studio">
-        <div class="hero">
-          <div class="hero-copy">
-            <p class="eyebrow">The voice-native studio</p>
-            <h1>Speak your system. <em>Watch it draw itself.</em></h1>
-            <p class="lede">
-              Commands become nodes and edges, with undo, export, and a record
-              of how it was all built.
-            </p>
+      <section class="world" data-world aria-label="recite: the living studio"></section>
 
-            <div class="speak">
-              <label class="visually-hidden" for="speak">Speak a command</label>
-              <textarea
-                id="speak"
-                rows="2"
-                spellcheck="false"
-                autocomplete="off"
-                placeholder="Speak. Commands land here."
-              ></textarea>
-            </div>
+      <section class="page page--studio" id="studio-tool">
+        <p class="eyebrow">The studio</p>
+        <h1>Where it lands.</h1>
+        <p class="lede">
+          Speak a command into the box. The canvas, parser and undo arrive as
+          this build goes on.
+        </p>
 
-            <div class="say-row">
-              <span class="say-label">say</span>
-              <div class="say-chips">
-                ${EXAMPLES.map(
-                  (example) =>
-                    `<button class="say" type="button" data-say="${example}">${example}</button>`,
-                ).join("")}
-              </div>
-            </div>
+        <div class="speak">
+          <label class="visually-hidden" for="speak">Speak a command</label>
+          <textarea
+            id="speak"
+            rows="2"
+            spellcheck="false"
+            autocomplete="off"
+            placeholder="Speak. Commands land here."
+          ></textarea>
+        </div>
+
+        <div class="say-row">
+          <span class="say-label">say</span>
+          <div class="say-chips">
+            ${EXAMPLES.map(
+              (example) =>
+                `<button class="say" type="button" data-say="${example}">${example}</button>`,
+            ).join("")}
           </div>
-
-          <div class="hero-demo" data-demo aria-label="Preview: spoken commands drawing a diagram"></div>
         </div>
 
         <p class="note">
-          Built in the open, session by session. The canvas, parser and undo arrive next.
+          Built in the open, session by session. Every session is recorded.
         </p>
       </section>
     `;
@@ -57,8 +53,8 @@ export default {
   mount(root: HTMLElement): () => void {
     const cleanups: Array<() => void> = [];
 
-    const demo = root.querySelector<HTMLElement>("[data-demo]");
-    if (demo) cleanups.push(mountDiagramDemo(demo));
+    const world = root.querySelector<HTMLElement>("[data-world]");
+    if (world) cleanups.push(mountWorldHero(world));
 
     const input = root.querySelector<HTMLTextAreaElement>("#speak");
     root.querySelectorAll<HTMLButtonElement>(".say").forEach((chip) => {
@@ -73,6 +69,7 @@ export default {
     });
 
     cleanups.push(enterPage(root));
+    cleanups.push(scrollReveal(root));
     return () => cleanups.forEach((fn) => fn());
   },
 };
