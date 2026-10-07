@@ -1,8 +1,9 @@
-/* recite: dark editorial shell (elevated, session 002)
-   Direction: dark editorial / print-adjacent. ONE accent, ONE theme (dark),
-   a documented radius rule (panels 16 / wells 12 / pills 999).
-   Type: Newsreader (display, self-hosted), system sans (body), system mono (labels).
-   Motion: GSAP, all of it reduced-motion aware. */
+/* recite: the olive shell — theme matched to the living world hero
+   Direction: dark editorial / print-adjacent, in the world's palette (deep
+   olive grounds, the world's cream ink, its pale-green light as the accent).
+   ONE accent, ONE theme (dark), a documented radius rule (panels 16 / wells
+   12 / pills 999). Type: Newsreader (display, self-hosted), system sans
+   (body), system mono (labels). Motion: GSAP, reduced-motion aware. */
 
 @font-face {
   font-family: "Newsreader";
@@ -23,14 +24,16 @@
 :root {
   color-scheme: dark;
 
-  --bg: #0d0c0b;
-  --bg-panel: #141210;
-  --ink: #ece9e2;
-  --ink-muted: #9b968b;
-  --ink-faint: #857f74;
-  --line: #262320;
-  --line-strong: #3a352f;
-  --accent: #ff4438;
+  /* The palette follows the living world (the hero): deep olive grounds, the
+     world's cream ink, and its pale-green light as the one accent. */
+  --bg: #171a14;
+  --bg-panel: #1d2119;
+  --ink: #eef1e7;
+  --ink-muted: #a9b39a;
+  --ink-faint: #8b9380;
+  --line: #262b20;
+  --line-strong: #3a4032;
+  --accent: #d7e3c1;
 
   --serif: "Newsreader", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
   --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -62,7 +65,7 @@ body {
   display: flex;
   flex-direction: column;
   background:
-    radial-gradient(120% 70% at 78% -12%, rgb(255 68 56 / 0.05), transparent 58%),
+    radial-gradient(120% 70% at 78% -12%, rgb(214 226 200 / 0.055), transparent 58%),
     var(--bg);
   color: var(--ink);
   font-family: var(--sans);

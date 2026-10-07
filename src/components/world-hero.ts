@@ -364,7 +364,7 @@ function buildRibbons(doc: Document): Ribbons | null {
   if (paths.length < 2 || texts.length < 2 || runs.length < 2) return null;
 
   const reduce = prefersReducedMotion();
-  const tweens: gsap.core.Tween[] = [];
+  const tweens: gsap.core.Animation[] = [];
   let started = false;
 
   const start = (): void => {
@@ -397,26 +397,44 @@ function buildRibbons(doc: Document): Ribbons | null {
     const ready: Promise<unknown> = doc.fonts?.ready ?? Promise.resolve();
     void ready.then(() => {
       if (reduce) return;
+
       runs.forEach((run, index) => {
         const host = texts[index];
         const path = paths[index];
-        const base = run.dataset.repeat ?? "";
-        if (!host || !path || !base) return;
+        if (!host || !path) return;
+
+        // The raw stream is tspan segments (so every filler stays addressable);
+        // the refined stream is plain text. Either way the unit is one full
+        // copy of the stream, repeated until the path stays covered.
+        const segs = Array.from(run.querySelectorAll<SVGElement>(".wr-seg"));
+        const seed = segs.length ? segs.map((seg) => seg.cloneNode(true) as SVGElement) : null;
+        const base = run.dataset.repeat ?? run.textContent ?? "";
+        if (!seed && !base) return;
+
+        const setCopies = (count: number): void => {
+          if (seed) {
+            const frag = doc.createDocumentFragment();
+            for (let c = 0; c < count; c++) for (const seg of seed) frag.appendChild(seg.cloneNode(true));
+            run.replaceChildren(frag);
+          } else {
+            run.textContent = base.repeat(count);
+          }
+        };
 
         // The loop period: measure one copy, then two — the delta between the
         // measurements is the distance between corresponding glyphs across the
         // seam, which is exactly what a seamless marquee needs.
-        run.textContent = base;
+        setCopies(1);
         const one = run.getComputedTextLength();
-        run.textContent = base + base;
+        setCopies(2);
         const period = run.getComputedTextLength() - one;
         if (period <= 0) return;
 
         // Enough copies that the path stays covered at every loop position.
         const copies = Math.max(2, Math.ceil(path.getTotalLength() / period) + 1);
-        run.textContent = base.repeat(copies);
+        setCopies(copies);
 
-        const speed = index === 0 ? 42 : 56; // stage units per second
+        const speed = index === 0 ? 48 : 56; // stage units per second
         tweens.push(
           gsap.fromTo(
             host,
@@ -425,6 +443,55 @@ function buildRibbons(doc: Document): Ribbons | null {
           ),
         );
       });
+
+      // The raw arc keeps showing the process: a strike wave runs through its
+      // fillers (in stream order) every cycle, and the words brighten as they
+      // settle — raw speech refining itself, on repeat.
+      const rawHost = texts[0];
+      const rawRun = runs[0];
+      const rawSegs = rawRun ? Array.from(rawRun.querySelectorAll<SVGElement>(".wr-seg")) : [];
+      if (rawHost && rawRun && rawSegs.length) {
+        const bySeg = new Map<string, SVGElement[]>();
+        for (const seg of rawSegs) {
+          const key = seg.getAttribute("data-seg") ?? "";
+          const list = bySeg.get(key);
+          if (list) list.push(seg);
+          else bySeg.set(key, [seg]);
+        }
+        const keys = [...bySeg.keys()].sort();
+        const cycle = gsap.timeline({ repeat: -1 });
+        cycle.call(() => {
+          for (const filler of rawRun.querySelectorAll<SVGElement>(".flr")) {
+            filler.classList.remove("is-struck");
+            gsap.set(filler, { clearProps: "fill" });
+          }
+          gsap.set(rawHost, { fill: "rgba(255,255,255,0.44)" });
+        });
+        cycle.to({}, { duration: 4.2 });
+        keys.forEach((key, i) => {
+          cycle.call(
+            () => {
+              for (const seg of bySeg.get(key) ?? []) {
+                for (const filler of seg.querySelectorAll<SVGElement>(".flr")) {
+                  filler.classList.add("is-struck");
+                  // a brief flash as the wave hits, then it settles dim —
+                  // the refinement is an event you can see from across the page
+                  gsap.fromTo(
+                    filler,
+                    { fill: "rgba(255,255,255,0.85)" },
+                    { fill: "rgba(255,255,255,0.22)", duration: 0.6, ease: "power2.out", overwrite: "auto" },
+                  );
+                }
+              }
+            },
+            undefined,
+            4.2 + i * 0.55,
+          );
+        });
+        cycle.to(rawHost, { fill: "rgba(255,255,255,0.56)", duration: 1.3, ease: "power1.out" }, 4.4);
+        cycle.to({}, { duration: 6 });
+        tweens.push(cycle);
+      }
     });
   };
 

@@ -831,7 +831,12 @@
   .wr-text--raw{
     font-family:'Lexend',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
     font-size:17px; font-weight:300; letter-spacing:.4px;
-    fill:rgba(255,255,255,.46);
+    fill:rgba(255,255,255,.44);
+  }
+  .wr-text--raw .flr{ fill:rgba(255,255,255,.30); transition:fill .45s var(--ease); }
+  .wr-text--raw .flr.is-struck{
+    fill:rgba(255,255,255,.20);
+    text-decoration:line-through;
   }
   .wr-text--ref{
     font-family:ui-monospace,'SFMono-Regular',Menlo,Consolas,'Liberation Mono',monospace;
@@ -842,6 +847,7 @@
   @media (prefers-reduced-motion:reduce){
     .wr-path{ stroke-dashoffset:0 !important; }
     .wr-text{ opacity:1 !important; }
+    .wr-text--raw .flr{ text-decoration:line-through; fill:rgba(255,255,255,.22); }
   }
 </style>
 </head>
@@ -969,10 +975,10 @@
         <path class="wr-path wr-path--band" id="wr-band-path" pathLength="1"
           d="M -80 680 C 260 630, 560 620, 860 610 C 1160 600, 1420 615, 1680 555"/>
         <text class="wr-text wr-text--raw" dy="-3">
-          <textPath class="wr-run" href="#wr-raw-path" data-repeat="hey so um add like a payments api and uh connect it to postgres and maybe add a cache for the reads and also um scale the workers and queue the events and uh ">hey so um add like a payments api and uh connect it to postgres and maybe add a cache for the reads and also um scale the workers and queue the events and uh hey so um add like a payments api and uh connect it to postgres and maybe add a cache for the reads and also um scale the workers and queue the events and uh </textPath>
+          <textPath class="wr-run" href="#wr-raw-path"><tspan class="wr-seg" data-seg="1">hey so <tspan class="flr">um</tspan> add like a payments api and <tspan class="flr">uh</tspan> connect it to postgres</tspan><tspan class="wr-seg" data-seg="2"> okay now <tspan class="flr">um</tspan> throw in a cache for the reads</tspan><tspan class="wr-seg" data-seg="3"> <tspan class="flr">uh</tspan> and maybe add a rate limiter for the gateway calls</tspan><tspan class="wr-seg" data-seg="4"> also <tspan class="flr">um</tspan> route the events through a queue and scale the workers</tspan><tspan class="wr-seg" data-seg="5"> <tspan class="flr">um</tspan> dont forget like a blob store for the uploads</tspan><tspan class="wr-seg" data-seg="6"> and <tspan class="flr">uh</tspan> put a cdn in front of the static assets</tspan></textPath>
         </text>
         <text class="wr-text wr-text--ref" dy="4.5">
-          <textPath class="wr-run" href="#wr-band-path" data-repeat="add payments api · connect payments api to postgres · add a cache for the reads · queue the events · scale the workers · ">add payments api · connect payments api to postgres · add a cache for the reads · queue the events · scale the workers · add payments api · connect payments api to postgres · add a cache for the reads · queue the events · scale the workers · </textPath>
+          <textPath class="wr-run" href="#wr-band-path" data-repeat="add payments api · connect payments api to postgres · add a cache for the reads · add a rate limiter for the gateway calls · route the events through a queue · scale the workers · add a blob store for the uploads · put a cdn in front of the static assets · ">add payments api · connect payments api to postgres · add a cache for the reads · add a rate limiter for the gateway calls · route the events through a queue · scale the workers · add a blob store for the uploads · put a cdn in front of the static assets · </textPath>
         </text>
       </svg>
     </div>
