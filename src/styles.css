@@ -669,3 +669,180 @@ body[data-page="studio"] #view {
   margin-inline: auto;
   padding: clamp(3rem, 8vh, 5.5rem) var(--pad) clamp(3.5rem, 10vh, 7rem);
 }
+
+/* ---- connect (the Flow bridge) ---- */
+
+.bridge-steps {
+  margin: 0 0 1.8rem;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.7rem;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  line-height: 1.7;
+  color: var(--ink-muted);
+}
+
+.bridge-steps b {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.bridge-os {
+  color: var(--ink-faint);
+  margin-left: 0.35rem;
+}
+
+.bridge-steps code {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--ink) 7%, transparent);
+  border-radius: 6px;
+  padding: 0.1rem 0.4rem;
+}
+
+.drop-zone {
+  border: 1px dashed color-mix(in srgb, var(--ink-faint) 70%, transparent);
+  border-radius: var(--radius);
+  background: var(--bg-panel);
+  min-height: 12rem;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 2rem;
+  cursor: pointer;
+  transition: border-color 180ms var(--ease), background 180ms var(--ease);
+}
+
+.drop-zone:hover,
+.drop-zone.is-over {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 5%, var(--bg-panel));
+}
+
+.drop-zone.is-busy {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.drop-zone strong {
+  display: block;
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.drop-zone span {
+  display: block;
+  margin-top: 0.45rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--ink-faint);
+}
+
+.bridge-status {
+  margin: 0.9rem 0 0;
+  min-height: 1.2em;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--ink-faint);
+}
+
+.bridge-status.is-error {
+  color: var(--ink);
+}
+
+.bridge-results {
+  margin-top: 2.2rem;
+  display: grid;
+  gap: 1.8rem;
+}
+
+.bridge-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 1px;
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--line);
+  overflow: hidden;
+}
+
+.bridge-stats > div {
+  background: var(--bg-panel);
+  padding: 1rem 1.15rem 1.1rem;
+}
+
+.bridge-stats dt {
+  margin-bottom: 0.4rem;
+  font-family: var(--mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.bridge-stats dd {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--ink);
+}
+
+.bridge-pairs,
+.bridge-sessions {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.bridge-pair {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-well);
+  background: var(--bg-panel);
+  padding: 0.9rem 1.05rem;
+}
+
+.bridge-raw {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--ink-faint);
+}
+
+.bridge-refined {
+  margin: 0.45rem 0 0;
+  font-size: 0.9rem;
+  color: var(--ink);
+}
+
+.bridge-session {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-well);
+  background: var(--bg-panel);
+  padding: 0.8rem 1rem 0.9rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.bridge-session header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.9rem;
+  align-items: baseline;
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.05em;
+  color: var(--ink-faint);
+}
+
+.bridge-session p {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--ink-muted);
+}
+
+.bridge-session audio {
+  width: 100%;
+  height: 2.1rem;
+  filter: saturate(0.4) brightness(0.95);
+}
