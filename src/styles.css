@@ -649,8 +649,10 @@ h1 em {
   color: rgba(255, 255, 255, 0.6);
 }
 
-/* On the studio route the world's own dock is the navigation. */
-body[data-page="studio"] .site-head {
+/* On the studio route the world's own dock is the navigation — but only
+   while the world actually mounts. Without WebGL2 the fallback field has
+   no dock, so the site header stays. */
+body[data-page="studio"]:has(.world:not(.world--fallback)) .site-head {
   display: none;
 }
 
