@@ -1,5 +1,5 @@
 export default {
-  title: "recite — about",
+  title: "recite: about",
 
   render(): string {
     return `
@@ -10,15 +10,15 @@ export default {
         <div class="prose">
           <p>
             recite is a voice-native studio in two halves. <strong>Studio</strong>
-            turns speech into a diagram — speak a system, watch it draw itself,
+            turns speech into a diagram: speak a system, watch it draw itself,
             refine by voice. <strong>Record</strong> keeps the build that made
             it: the real audio sitting next to the commits it produced, so
             every change has a voice behind it.
           </p>
           <p>
             The first record is its own. This site is being designed and built
-            entirely by voice — dictated into an editor, no product code typed
-            by hand — and each session lands here as it happens.
+            entirely by voice. Every session is dictated and committed as it
+            happens; no product code is typed by hand.
           </p>
           <p>
             Built for the <strong>Hacker House Goa 2026 × Wispr Flow</strong>
@@ -29,7 +29,7 @@ export default {
         <dl class="facts">
           <div>
             <dt>Stack</dt>
-            <dd>Vite + TypeScript, no framework — a static site, no backend.</dd>
+            <dd>Vite + TypeScript, no framework. A static site, no backend.</dd>
           </div>
           <div>
             <dt>Method</dt>

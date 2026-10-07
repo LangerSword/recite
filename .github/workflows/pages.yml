@@ -1,4 +1,4 @@
-# recite — deploy to GitHub Pages (custom domain: recite.langersword.in)
+# recite: deploy to GitHub Pages (custom domain: recite.langersword.in)
 name: pages
 
 on:
