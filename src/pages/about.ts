@@ -1,10 +1,13 @@
 import { scrollReveal } from "../lib/motion";
+import { mountWorldHero } from "../components/world-hero";
 
 export default {
   title: "sayshell: about",
 
   render(): string {
     return `
+      <section class="world" data-world aria-label="sayshell: the living hero"></section>
+
       <section class="page">
         <p class="eyebrow">About</p>
         <h1>Say it. Check it. <em>Then run it.</em></h1>
@@ -47,6 +50,13 @@ export default {
   },
 
   mount(root: HTMLElement): () => void {
-    return scrollReveal(root);
+    const cleanups: Array<() => void> = [];
+    const world = root.querySelector<HTMLElement>("[data-world]");
+    if (world) cleanups.push(mountWorldHero(world));
+    const reveal = scrollReveal(root);
+    return () => {
+      cleanups.forEach((fn) => fn());
+      if (typeof reveal === "function") reveal();
+    };
   },
 };
