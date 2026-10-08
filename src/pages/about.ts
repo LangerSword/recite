@@ -1,7 +1,7 @@
 import { scrollReveal } from "../lib/motion";
 
 export default {
-  title: "recite: about",
+  title: "sayshell: about",
 
   render(): string {
     return `
@@ -11,7 +11,7 @@ export default {
 
         <div class="prose">
           <p data-reveal>
-            recite is a voice-native studio in two halves. <strong>Studio</strong>
+            sayshell is a voice-to-shell safety layer. <strong>Studio</strong>
             turns speech into a diagram: speak a system, watch it draw itself,
             refine by voice. <strong>Record</strong> keeps the build that made
             it: the real audio sitting next to the commits it produced, so
@@ -39,7 +39,7 @@ export default {
           </div>
           <div data-reveal>
             <dt>World</dt>
-            <dd>The living hero is ThreeUI's Sylva, adapted for recite.</dd>
+            <dd>The living hero is ThreeUI's Sylva, adapted for sayshell.</dd>
           </div>
         </dl>
       </section>

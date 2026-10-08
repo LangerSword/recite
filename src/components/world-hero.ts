@@ -45,7 +45,7 @@ export function mountWorldHero(root: HTMLElement): () => void {
   const frame = document.createElement("iframe");
   frame.className = "world-frame";
   frame.src = WORLD_URL;
-  frame.title = "recite: the living studio";
+  frame.title = "sayshell: the living studio";
   frame.setAttribute("sandbox", FRAME_SANDBOX);
   frame.setAttribute("scrolling", "no");
 

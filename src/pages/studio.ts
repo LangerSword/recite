@@ -53,11 +53,11 @@ interface StudioLogEntry {
 const STORAGE_KEY = "recite.studio.v1";
 
 export default {
-  title: "recite: speak your system",
+  title: "sayshell: say it, check it, run it",
 
   render(): string {
     return `
-      <section class="world" data-world aria-label="recite: the living studio"></section>
+      <section class="world" data-world aria-label="sayshell: the living studio"></section>
 
       <section class="page page--studio" id="studio-tool">
         <p class="eyebrow">The studio</p>
@@ -453,7 +453,7 @@ export default {
 
     const specMarkdown = (): string => {
       const label = (id: string): string => graph.nodes.find((n) => n.id === id)?.label ?? id;
-      const lines = ["# System design (built with recite)", "", "## Services"];
+      const lines = ["# System design (built with sayshell)", "", "## Services"];
       for (const node of graph.nodes) lines.push(`- ${node.label}`);
       if (graph.edges.length) {
         lines.push("", "## Connections");
@@ -467,7 +467,7 @@ export default {
       const label = (id: string): string => graph.nodes.find((n) => n.id === id)?.label ?? id;
       return JSON.stringify(
         {
-          tool: "recite",
+          tool: "sayshell",
           nodes: graph.nodes.map((n) => n.label),
           edges: graph.edges.map((e) => ({ from: label(e.from), to: label(e.to) })),
         },

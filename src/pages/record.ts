@@ -1,7 +1,7 @@
 import { scrollReveal } from "../lib/motion";
 
 export default {
-  title: "recite: the build record",
+  title: "sayshell: the build record",
 
   render(): string {
     return `
