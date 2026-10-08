@@ -413,12 +413,16 @@ function buildRibbons(doc: Document): Ribbons | null {
 
         const setCopies = (count: number): void => {
           if (seed) {
-            const frag = doc.createDocumentFragment();
-            for (let c = 0; c < count; c++) for (const seg of seed) frag.appendChild(seg.cloneNode(true));
-            run.replaceChildren(frag);
+            // removeChild/appendChild (not replaceChildren): the most boring
+            // DOM path is the one every engine treats identically.
+            while (run.firstChild) run.removeChild(run.firstChild);
+            for (let c = 0; c < count; c++) for (const seg of seed) run.appendChild(seg.cloneNode(true));
           } else {
             run.textContent = base.repeat(count);
           }
+          // Force layout before the next measurement — Firefox can otherwise
+          // hand back a stale text length and the marquee never starts.
+          void run.getBoundingClientRect();
         };
 
         // The loop period: measure one copy, then two — the delta between the
@@ -427,7 +431,8 @@ function buildRibbons(doc: Document): Ribbons | null {
         setCopies(1);
         const one = run.getComputedTextLength();
         setCopies(2);
-        const period = run.getComputedTextLength() - one;
+        let period = run.getComputedTextLength() - one;
+        if (period <= 0) period = one; // last resort: one copy ≈ one period
         if (period <= 0) return;
 
         // Enough copies that the path stays covered at every loop position.
@@ -465,7 +470,7 @@ function buildRibbons(doc: Document): Ribbons | null {
             filler.classList.remove("is-struck");
             gsap.set(filler, { clearProps: "fill" });
           }
-          gsap.set(rawHost, { fill: "rgba(255,255,255,0.44)" });
+          gsap.set(rawHost, { fill: "rgba(255,255,255,0.55)" });
         });
         cycle.to({}, { duration: 4.2 });
         keys.forEach((key, i) => {
@@ -488,7 +493,7 @@ function buildRibbons(doc: Document): Ribbons | null {
             4.2 + i * 0.55,
           );
         });
-        cycle.to(rawHost, { fill: "rgba(255,255,255,0.56)", duration: 1.3, ease: "power1.out" }, 4.4);
+        cycle.to(rawHost, { fill: "rgba(255,255,255,0.68)", duration: 1.3, ease: "power1.out" }, 4.4);
         cycle.to({}, { duration: 6 });
         tweens.push(cycle);
       }

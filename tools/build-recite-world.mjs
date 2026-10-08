@@ -213,27 +213,27 @@ const RIBBONS = `    <!-- recite: the word-ribbons. The vines give way to words:
     <div class="wr-wrap" id="word-ribbons" aria-hidden="true">
       <svg viewBox="0 0 1600 880" focusable="false">
         <path class="wr-path wr-path--raw" id="wr-raw-path" pathLength="1"
-          d="M 70 900 C 20 700, 60 520, 190 430 C 300 355, 400 320, 520 300"/>
+          d="M -60 560 C 60 480, 160 420, 340 390 C 520 372, 640 362, 800 350"/>
         <path class="wr-path wr-path--band" id="wr-band-path" pathLength="1"
           d="M -80 680 C 260 630, 560 620, 860 610 C 1160 600, 1420 615, 1680 555"/>
         <g class="wr-pill" id="wr-pill" style="opacity:0">
-          <rect class="wr-pill-body" x="36" y="646" width="128" height="34" rx="17"/>
-          <rect class="wr-bar" x="54" y="659" width="3" height="8" rx="1.5"/>
-          <rect class="wr-bar" x="59.8" y="656" width="3" height="14" rx="1.5"/>
-          <rect class="wr-bar" x="65.6" y="653" width="3" height="20" rx="1.5"/>
-          <rect class="wr-bar" x="71.4" y="657.5" width="3" height="11" rx="1.5"/>
-          <rect class="wr-bar" x="77.2" y="655" width="3" height="16" rx="1.5"/>
-          <rect class="wr-bar" x="83" y="658.5" width="3" height="9" rx="1.5"/>
-          <rect class="wr-bar" x="88.8" y="654" width="3" height="18" rx="1.5"/>
-          <rect class="wr-bar" x="94.6" y="657" width="3" height="12" rx="1.5"/>
-          <rect class="wr-bar" x="100.4" y="652" width="3" height="22" rx="1.5"/>
-          <rect class="wr-bar" x="106.2" y="658" width="3" height="10" rx="1.5"/>
-          <rect class="wr-bar" x="112" y="655.5" width="3" height="15" rx="1.5"/>
-          <rect class="wr-bar" x="117.8" y="659" width="3" height="8" rx="1.5"/>
-          <rect class="wr-bar" x="123.6" y="654.5" width="3" height="17" rx="1.5"/>
-          <rect class="wr-bar" x="129.4" y="657.5" width="3" height="11" rx="1.5"/>
-          <rect class="wr-bar" x="135.2" y="656" width="3" height="14" rx="1.5"/>
-          <rect class="wr-bar" x="141" y="658.5" width="3" height="9" rx="1.5"/>
+          <rect class="wr-pill-body" x="96" y="646" width="128" height="34" rx="17"/>
+          <rect class="wr-bar" x="114" y="659" width="3" height="8" rx="1.5"/>
+          <rect class="wr-bar" x="119.8" y="656" width="3" height="14" rx="1.5"/>
+          <rect class="wr-bar" x="125.6" y="653" width="3" height="20" rx="1.5"/>
+          <rect class="wr-bar" x="131.4" y="657.5" width="3" height="11" rx="1.5"/>
+          <rect class="wr-bar" x="137.2" y="655" width="3" height="16" rx="1.5"/>
+          <rect class="wr-bar" x="143" y="658.5" width="3" height="9" rx="1.5"/>
+          <rect class="wr-bar" x="148.8" y="654" width="3" height="18" rx="1.5"/>
+          <rect class="wr-bar" x="154.6" y="657" width="3" height="12" rx="1.5"/>
+          <rect class="wr-bar" x="160.4" y="652" width="3" height="22" rx="1.5"/>
+          <rect class="wr-bar" x="166.2" y="658" width="3" height="10" rx="1.5"/>
+          <rect class="wr-bar" x="172" y="655.5" width="3" height="15" rx="1.5"/>
+          <rect class="wr-bar" x="177.8" y="659" width="3" height="8" rx="1.5"/>
+          <rect class="wr-bar" x="183.6" y="654.5" width="3" height="17" rx="1.5"/>
+          <rect class="wr-bar" x="189.4" y="657.5" width="3" height="11" rx="1.5"/>
+          <rect class="wr-bar" x="195.2" y="656" width="3" height="14" rx="1.5"/>
+          <rect class="wr-bar" x="201" y="658.5" width="3" height="9" rx="1.5"/>
         </g>
         <text class="wr-text wr-text--raw" dy="-3">
           <textPath class="wr-run" href="#wr-raw-path"><tspan class="wr-seg" data-seg="1">okay so <tspan class="flr">um</tspan> I want to build like a full marketplace website where people can sell things</tspan><tspan class="wr-seg" data-seg="2"> and <tspan class="flr">uh</tspan> there should be user accounts with profiles and ratings</tspan><tspan class="wr-seg" data-seg="3"> <tspan class="flr">um</tspan> listings with search and categories</tspan><tspan class="wr-seg" data-seg="4"> plus checkout and payments and <tspan class="flr">uh</tspan> a queue for the orders</tspan><tspan class="wr-seg" data-seg="5"> and <tspan class="flr">um</tspan> connection pooling for the database</tspan><tspan class="wr-seg" data-seg="6"> and <tspan class="flr">uh</tspan> notifications and a seller dashboard too</tspan></textPath>
@@ -360,6 +360,8 @@ const OVERRIDES = `
     position:absolute; left:0; top:0; z-index:3;
     width:calc(1600 * var(--u)); height:calc(880 * var(--u));
     pointer-events:none;
+    -webkit-mask-image:linear-gradient(90deg, transparent 0, #000 5%, #000 95%, transparent 100%);
+            mask-image:linear-gradient(90deg, transparent 0, #000 5%, #000 95%, transparent 100%);
   }
   .wr-wrap svg{ display:block; width:100%; height:100%; overflow:visible; }
   .wr-path{ fill:none; stroke-dasharray:1; stroke-dashoffset:1; }
@@ -369,7 +371,7 @@ const OVERRIDES = `
   .wr-text--raw{
     font-family:'Lexend',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
     font-size:17px; font-weight:300; letter-spacing:.4px;
-    fill:rgba(255,255,255,.44);
+    fill:rgba(255,255,255,.55);
   }
   .wr-text--raw .flr{ fill:rgba(255,255,255,.30); transition:fill .45s var(--ease); }
   .wr-text--raw .flr.is-struck{

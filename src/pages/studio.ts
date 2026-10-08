@@ -3,6 +3,7 @@ import { mountWorldHero } from "../components/world-hero";
 import { StudioCanvas } from "../studio/canvas";
 import { applyOp, emptyGraph, summarize, type StudioGraph } from "../studio/graph";
 import { parseCommand } from "../studio/parse";
+import { blobToPcm16k, loadWhisper, transcribe } from "../lib/whisper";
 
 const EXAMPLES = [
   "add payments api",
@@ -293,6 +294,10 @@ export default {
     const SR = window.SpeechRecognition ?? window.webkitSpeechRecognition;
     let rec: SpeechRecognitionLike | null = null;
     let wantListening = false;
+    /* Whisper fallback (Firefox & friends): record → transcribe locally. */
+    let recorder: MediaRecorder | null = null;
+    let chunks: Blob[] = [];
+    let whisperBusy = false;
 
     const setListeningUI = (on: boolean): void => {
       micBtn?.classList.toggle("is-listening", on);
@@ -346,9 +351,69 @@ export default {
       return rec;
     };
 
+    const toggleWhisper = async (): Promise<void> => {
+      if (whisperBusy) return;
+      if (recorder && recorder.state === "recording") {
+        recorder.stop();
+        return;
+      }
+      try {
+        setFeedback("loading the local speech model — first time only, ~40 MB…");
+        const pipe = await loadWhisper((percent) => {
+          if (percent >= 1 && percent < 100) {
+            setFeedback(`loading the local speech model… ${Math.round(percent)}%`);
+          }
+        });
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        chunks = [];
+        recorder = new MediaRecorder(stream);
+        recorder.ondataavailable = (event) => {
+          if (event.data.size) chunks.push(event.data);
+        };
+        recorder.onstop = () => {
+          stream.getTracks().forEach((track) => track.stop());
+          void (async () => {
+            try {
+              whisperBusy = true;
+              setFeedback("transcribing…");
+              const blob = new Blob(chunks, { type: recorder?.mimeType || "audio/webm" });
+              const pcm = await blobToPcm16k(blob);
+              const text = (await transcribe(pipe, pcm)).trim();
+              whisperBusy = false;
+              if (!text) {
+                setFeedback("✗ heard nothing — try again, a little closer to the mic", true);
+                return;
+              }
+              if (!run(text)) setFeedback(`✗ heard “${text}” — not a command yet`, true);
+            } catch (error) {
+              whisperBusy = false;
+              setFeedback(
+                error instanceof Error ? `✗ ${error.message}` : "✗ transcription failed",
+                true,
+              );
+            } finally {
+              setListeningUI(false);
+            }
+          })();
+        };
+        recorder.start();
+        setListeningUI(true);
+        setFeedback("listening (local whisper) — click speak again to stop & run");
+      } catch (error) {
+        setListeningUI(false);
+        const msg = error instanceof Error ? error.message : String(error);
+        setFeedback(
+          /denied|permission/i.test(msg)
+            ? "✗ microphone permission denied — allow it in the browser prompt"
+            : `✗ mic error: ${msg}`,
+          true,
+        );
+      }
+    };
+
     const toggleMic = (): void => {
       if (!SR) {
-        setFeedback("✗ this browser can't listen — dictate with Flow into the box instead", true);
+        void toggleWhisper();
         return;
       }
       wantListening = !wantListening;
@@ -371,6 +436,7 @@ export default {
     cleanups.push(() => {
       wantListening = false;
       rec?.stop();
+      if (recorder && recorder.state === "recording") recorder.stop();
     });
 
     /* ── buttons: undo / clear / export ──────────────────────────────────── */
