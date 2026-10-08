@@ -440,6 +440,9 @@ function buildRibbons(doc: Document): Ribbons | null {
         setCopies(copies);
 
         const speed = index === 0 ? 64 : 72; // stage units per second
+        // Raw words move INTO the pill, refined words move OUT of it. Both run
+        // the same direction along their path (start → pill for raw, pill → end
+        // for refined), so the flow reads as one stream passing the pill.
         tweens.push(
           gsap.fromTo(
             host,
