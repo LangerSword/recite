@@ -508,16 +508,29 @@ function buildRibbons(doc: Document): Ribbons | null {
       if (pill) {
         tweens.push(gsap.to(pill, { opacity: 1, duration: 0.9, ease: "power1.out", delay: 0.45 }));
         if (!reduce && bars.length) {
+          // Animate the bar's own height about the pill's centreline (y=679),
+          // not a transform: GSAP's transform on SVG rects drifts them off the
+          // capsule, so geometry is driven directly and stays inside the pill.
+          const CENTER = 679;
+          const MAX = 16;
           bars.forEach((bar, i) => {
+            const h0 = Number(bar.getAttribute("height")) || 8;
+            const state = { h: h0 };
+            const paint = (): void => {
+              const h = Math.min(MAX, Math.max(3, state.h));
+              bar.setAttribute("height", h.toFixed(2));
+              bar.setAttribute("y", (CENTER - h / 2).toFixed(2));
+            };
             tweens.push(
-              gsap.to(bar, {
-                scaleY: () => gsap.utils.random(0.35, 1.9),
+              gsap.to(state, {
+                h: () => gsap.utils.random(4, MAX),
                 duration: () => gsap.utils.random(0.22, 0.5),
                 yoyo: true,
                 repeat: -1,
                 repeatRefresh: true,
                 ease: "sine.inOut",
                 delay: i * 0.035,
+                onUpdate: paint,
               }),
             );
           });
