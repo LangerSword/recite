@@ -8,7 +8,7 @@ export default {
     return `
       <section class="world" data-world aria-label="sayshell: the living hero"></section>
 
-      <section class="page">
+      <section class="page" id="story">
         <p class="eyebrow">About</p>
         <h1>Say it. Check it. <em>Then run it.</em></h1>
 

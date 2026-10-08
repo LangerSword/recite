@@ -59,16 +59,16 @@ function rewrite(name, find, replace, count = 1) {
 
 rewrite("head/title",
   `<title>Sylva — Into the living world</title>`,
-  `<title>recite: the voice-native studio</title>
+  `<title>sayshell: say it, check it, run it</title>
 <meta property="og:type" content="website">
-<meta property="og:title" content="recite: speak your system">
-<meta property="og:description" content="The voice-native studio: speak your system, watch it draw, and keep the record of how it was built.">
-<meta property="og:url" content="https://recite.langersword.in/">
+<meta property="og:title" content="sayshell: say it, check it, run it">
+<meta property="og:description" content="A voice-to-shell safety layer. Dictate a command, see the effect, confirm before anything destructive runs.">
+<meta property="og:url" content="https://sayshell.langersword.in/">
 <meta name="twitter:card" content="summary">`);
 
 rewrite("head/description",
   `<meta name="description" content="Restoring wild places through patient design, native planting, and a deeper kind of stewardship.">`,
-  `<meta name="description" content="The voice-native studio: speak your system, watch it draw, and keep the record of how it was built.">`);
+  `<meta name="description" content="A voice-to-shell safety layer. Dictate a command, see the effect, confirm before anything destructive runs.">`);
 
 rewrite("head/font",
   `https://ublctyddhtbgaersvxxb.supabase.co/storage/v1/object/public/threeui-media/scene-images/embedded/1ec8f6ee2750554b4bc59ff0b507d316a82a7ba37e0e5bebc41d3bd9b9faad46.woff2`,
@@ -82,7 +82,7 @@ rewrite("head/favicon",
 
 rewrite("dock/mark-anchor",
   `<a class="dock-item dock-mark" data-dock data-spec data-burst href="#" style="--d:120ms" aria-label="Sylva — home">`,
-  `<a class="dock-item dock-mark" data-dock data-spec data-burst href="#/studio" style="--d:120ms" aria-label="recite: home">`);
+  `<a class="dock-item dock-mark" data-dock data-spec data-burst href="#/about" style="--d:120ms" aria-label="sayshell: home">`);
 
 rewrite("dock/mark-glyph",
   `          <path d="M11 1.3c-2.1 0-3.95 1.2-4.75 2.95C3.95 4.55 2.3 6.25 2.3 8.35c0 2.3 1.9 4.2 4.3 4.2h8.8c2.4 0 4.3-1.9 4.3-4.2 0-2.1-1.65-3.8-4-4.1C14.95 2.5 13.1 1.3 11 1.3Z"/>
@@ -91,9 +91,9 @@ rewrite("dock/mark-glyph",
 
 rewrite("dock/studio-href",
   `<a class="dock-item is-active" data-dock data-spec data-burst href="#" style="--d:180ms">`,
-  `<a class="dock-item is-active" data-dock data-spec data-burst href="#/studio" style="--d:180ms">`);
+  `<a class="dock-item is-active" data-dock data-spec data-burst href="#/about" style="--d:180ms">`);
 
-rewrite("dock/label-grove", `<span>Grove</span>`, `<span>studio</span>`);
+rewrite("dock/label-grove", `<span>Grove</span>`, `<span>about</span>`);
 
 /* The canonical "Grove" sprout glyph is a plant; the studio is a graph. */
 rewrite("dock/glyph-studio",
@@ -114,27 +114,27 @@ rewrite("dock/label-journal", `<span>Journal</span>`, `<span>about</span>`);
 
 rewrite("dock/github-href",
   `<a class="dock-item dock-item--enter" data-dock data-spec data-burst href="#" style="--d:330ms">`,
-  `<a class="dock-item dock-item--enter" data-dock data-spec data-burst href="https://github.com/LangerSword/recite" target="_blank" rel="noopener" style="--d:330ms">`);
+  `<a class="dock-item dock-item--enter" data-dock data-spec data-burst href="https://github.com/LangerSword/sayshell" target="_blank" rel="noopener" style="--d:330ms">`);
 
 rewrite("dock/label-enter", `<span>Enter</span>`, `<span>github</span>`);
 
 /* ── 3. hero copy ────────────────────────────────────────────────────────── */
 
-rewrite("copy/headline-1", `<i style="--d:260ms">Step into</i>`, `<i style="--d:260ms">Speak your system.</i>`);
-rewrite("copy/headline-2", `<i style="--d:360ms">the living world</i>`, `<i style="--d:360ms">Watch it draw.</i>`);
+rewrite("copy/headline-1", `<i style="--d:260ms">Step into</i>`, `<i style="--d:260ms">Say it.</i>`);
+rewrite("copy/headline-2", `<i style="--d:360ms">the living world</i>`, `<i style="--d:360ms">Check it. Run it.</i>`);
 
 rewrite("copy/lede",
   `We restore wild places through patient design, native planting, and a deeper kind of stewardship.`,
-  `recite turns speech into a system: what you say becomes nodes and edges, with undo, export, and a record of how it was built.`);
+  `sayshell is a shell front end. You dictate a command. It checks the command, shows the effect, and asks before anything destructive runs.`);
 
-rewrite("copy/pill-label", `<span class="lbl">Explore the work</span>`, `<span class="lbl">Open the studio</span>`);
+rewrite("copy/pill-label", `<span class="lbl">Explore the work</span>`, `<span class="lbl">Read on github</span>`);
 
-rewrite("copy/stat-a", `<div><dt>Canopy restored</dt><dd>282 ha</dd></div>`, `<div><dt>The studio</dt><dd>draws by voice</dd></div>`);
-rewrite("copy/stat-b", `<div><dt>Native species</dt><dd>43 mapped</dd></div>`, `<div><dt>The record</dt><dd>kept word for word</dd></div>`);
+rewrite("copy/stat-a", `<div><dt>Canopy restored</dt><dd>282 ha</dd></div>`, `<div><dt>The gate</dt><dd>checks the command</dd></div>`);
+rewrite("copy/stat-b", `<div><dt>Native species</dt><dd>43 mapped</dd></div>`, `<div><dt>Every run</dt><dd>keeps a receipt</dd></div>`);
 
-rewrite("copy/ghost", `<div class="ghost fade" style="--d:1150ms" aria-hidden="true">SYLVA</div>`, `<div class="ghost fade" style="--d:1150ms" aria-hidden="true">RECITE</div>`);
+rewrite("copy/ghost", `<div class="ghost fade" style="--d:1150ms" aria-hidden="true">SYLVA</div>`, `<div class="ghost fade" style="--d:1150ms" aria-hidden="true">SAYSHELL</div>`);
 
-rewrite("copy/scroll-href", `<a class="scroll mask" style="--d:1040ms; --pd:9" href="#">`, `<a class="scroll mask" style="--d:1040ms; --pd:9" href="#studio-tool">`);
+rewrite("copy/scroll-href", `<a class="scroll mask" style="--d:1040ms; --pd:9" href="#">`, `<a class="scroll mask" style="--d:1040ms; --pd:9" href="#story">`);
 
 /* ── 4. the transformation panel (added) ─────────────────────────────────── */
 
