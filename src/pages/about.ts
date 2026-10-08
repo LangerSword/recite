@@ -11,15 +11,16 @@ export default {
 
         <div class="prose">
           <p data-reveal>
-            sayshell is a shell front end for dictated lines. You speak an
-            intent. sayshell proposes a command. It lists the effect. It asks
-            you to confirm before anything destructive runs. Every run writes
-            a receipt.
+            sayshell is a shell front end. You dictate a command with Wispr
+            Flow, or type one. sayshell parses the command, lists what it
+            will change, and asks you to confirm before anything destructive
+            runs. Every run writes a receipt.
           </p>
           <p data-reveal>
-            The first record is its own. This site is being designed and built
-            entirely by voice. Every session is dictated and committed as it
-            happens; no product code is typed by hand.
+            The gate uses bashlex, a shell parser, to read the command as a
+            tree. It checks the tree for dangerous patterns: recursive deletes,
+            force pushes, database drops, secret exposure, and more. It allows
+            read-only commands. It asks for confirmation on anything else.
           </p>
           <p data-reveal>
             Built for the <strong>Hacker House Goa 2026 × Wispr Flow</strong>

@@ -1,11 +1,10 @@
 import "./styles.css";
 
-import studio from "./pages/studio";
 import record from "./pages/record";
 import about from "./pages/about";
 import { enterPage } from "./lib/motion";
 
-type Route = "studio" | "record" | "about";
+type Route = "record" | "about";
 
 interface Page {
   title: string;
@@ -15,9 +14,9 @@ interface Page {
   mount?(root: HTMLElement): (() => void) | void;
 }
 
-const routes: Record<Route, Page> = { studio, record, about };
+const routes: Record<Route, Page> = { record, about };
 
-const DEFAULT_ROUTE: Route = "studio";
+const DEFAULT_ROUTE: Route = "about";
 const view = document.querySelector<HTMLElement>("#view");
 const navLinks = document.querySelectorAll<HTMLAnchorElement>(".site-nav a");
 
