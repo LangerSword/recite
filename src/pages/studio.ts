@@ -7,10 +7,10 @@ import { parseCommand } from "../studio/parse";
 import { blobToPcm16k, loadWhisper, transcribe } from "../lib/whisper";
 
 const EXAMPLES = [
-  "add payments api",
-  "connect payments api to postgres",
-  "add a cache for the reads",
-  "undo",
+  "delete the branches already merged into main",
+  "show the ten biggest files here",
+  "remove the dist folder",
+  "list the pods in production",
 ];
 
 /* Minimal Web Speech API surface — Chromium/Safari ship it; Firefox does not,
@@ -64,15 +64,14 @@ export default {
         <p class="eyebrow">The studio</p>
         <h1>Where it lands.</h1>
         <p class="lede">
-          Give the mic permission and speak — or dictate with Flow, or type.
-          Every command lands on the canvas, and the whole design exports for
-          your agent.
+          Dictate a command with Wispr Flow, or type one. sayshell checks it
+          before it runs. Read the effect. Confirm if it is destructive.
         </p>
 
         <div class="studio-grid">
           <div class="studio-col">
             <div class="speak">
-              <label class="visually-hidden" for="speak">Speak a command</label>
+              <label class="visually-hidden" for="speak">Dictate a command</label>
               <textarea
                 id="speak"
                 rows="2"

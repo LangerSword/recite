@@ -7,15 +7,14 @@ export default {
     return `
       <section class="page">
         <p class="eyebrow">About</p>
-        <h1>Design it by voice. Build it by voice. <em>Hear how it was made.</em></h1>
+        <h1>Say it. Check it. <em>Then run it.</em></h1>
 
         <div class="prose">
           <p data-reveal>
-            sayshell is a voice-to-shell safety layer. <strong>Studio</strong>
-            turns speech into a diagram: speak a system, watch it draw itself,
-            refine by voice. <strong>Record</strong> keeps the build that made
-            it: the real audio sitting next to the commits it produced, so
-            every change has a voice behind it.
+            sayshell is a shell front end for dictated lines. You speak an
+            intent. sayshell proposes a command. It lists the effect. It asks
+            you to confirm before anything destructive runs. Every run writes
+            a receipt.
           </p>
           <p data-reveal>
             The first record is its own. This site is being designed and built
@@ -30,16 +29,16 @@ export default {
 
         <dl class="facts">
           <div data-reveal>
-            <dt>Stack</dt>
-            <dd>Vite + TypeScript, no framework. A static site, no backend.</dd>
+            <dt>Input</dt>
+            <dd>Wispr Flow dictation, or typed text. No API key needed.</dd>
           </div>
           <div data-reveal>
-            <dt>Method</dt>
-            <dd>Product code enters the repo only through voice sessions.</dd>
+            <dt>Gate</dt>
+            <dd>Allow, ask, or block. Checks the command, not the intent.</dd>
           </div>
           <div data-reveal>
-            <dt>World</dt>
-            <dd>The living hero is ThreeUI's Sylva, adapted for sayshell.</dd>
+            <dt>Receipt</dt>
+            <dd>Every run logged locally. No cloud, no account.</dd>
           </div>
         </dl>
       </section>
