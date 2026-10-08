@@ -1,4 +1,5 @@
-import { enterPage, scrollReveal } from "../lib/motion";
+import { gsap } from "gsap";
+import { EASE, enterPage, prefersReducedMotion, scrollReveal } from "../lib/motion";
 import { mountWorldHero } from "../components/world-hero";
 import { StudioCanvas } from "../studio/canvas";
 import { applyOp, emptyGraph, summarize, type StudioGraph } from "../studio/graph";
@@ -210,6 +211,16 @@ export default {
           return li;
         }),
       );
+      // The newest entry settles in; older entries stay put. Only the head
+      // of the log moves, so the eye lands on what just happened.
+      const newest = logEl.firstElementChild;
+      if (newest instanceof HTMLElement && !prefersReducedMotion()) {
+        gsap.fromTo(
+          newest,
+          { autoAlpha: 0, y: -6 },
+          { autoAlpha: 1, y: 0, duration: 0.45, ease: EASE.out, clearProps: "transform,visibility,opacity" },
+        );
+      }
     };
 
     const doUndo = (): void => {

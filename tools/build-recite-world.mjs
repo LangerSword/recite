@@ -387,6 +387,10 @@ const OVERRIDES = `
   .wr-pill-body{ fill:rgba(233,231,220,.95); }
   .wr-bar{ fill:#242820; transform-box:fill-box; transform-origin:50% 50%; }
   @media (max-width:900px){ .wr-wrap{ display:none; } }
+  @media (prefers-reduced-transparency:reduce){
+    .rpanel{ background:rgba(30,35,27,.97); box-shadow:none; }
+    .wr-wrap{ -webkit-mask-image:none; mask-image:none; }
+  }
   @media (prefers-reduced-motion:reduce){
     .wr-path{ stroke-dashoffset:0 !important; }
     .wr-text{ opacity:1 !important; }

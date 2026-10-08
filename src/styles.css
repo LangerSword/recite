@@ -201,20 +201,27 @@ h1 {
   margin: 0 0 1.25rem;
   font-family: var(--serif);
   font-weight: 400;
-  font-size: clamp(2.4rem, 4.6vw, 3.9rem);
-  line-height: 1.14;
-  letter-spacing: -0.022em;
+  font-size: clamp(2.5rem, 5vw, 4.25rem);
+  line-height: 1.1;
+  letter-spacing: -0.028em;
+  font-optical-sizing: auto;
+  font-kerning: normal;
   text-wrap: balance;
 }
 
+/* Emphasis stays in the same family (italic), never a second face. The
+   line-height floor of 1.1 keeps italic descenders (y g j p q) clear. */
 h1 em {
   font-style: italic;
+  color: var(--accent);
+  padding-bottom: 0.04em;
 }
 
 .lede {
   margin: 0 0 2.4rem;
-  max-width: 38rem;
-  font-size: 1.06rem;
+  max-width: 36rem;
+  font-size: clamp(1.02rem, 1.3vw, 1.12rem);
+  line-height: 1.62;
   color: var(--ink-muted);
   text-wrap: pretty;
 }
@@ -460,6 +467,15 @@ h1 em {
 
 .site-foot a:hover {
   color: var(--accent);
+}
+
+/* Reduced transparency: the header drops its blur and becomes solid ground. */
+@media (prefers-reduced-transparency: reduce) {
+  .site-head {
+    background: var(--bg);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
 }
 
 @media (max-width: 560px) {
